@@ -1,0 +1,170 @@
+* {
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  margin: 0;
+}
+
+#gametitle {
+  margin: auto;
+  text-align: center;
+}
+
+#playground {
+  position: relative;
+  margin: auto;
+  width: 800px;
+  height: 800px;
+  border: black solid 1px;
+  background-color: #1e2b19;
+}
+
+.radarCircle {
+  position: absolute;
+  border: 2px solid #00ff80;
+  box-shadow: 0 0 16px 2px #00ff80; /*Glow-Effekt */
+  border-radius: 50%;
+  left: 50%; /* linke Kante genau in der Mitte des Feldes*/
+  top: 50%; /* obere Kante genau in der Mitte des Feldes*/
+  transform: translate(
+    -50%,
+    -50%
+  ); /* setzt den Mittelpunkt genau ins Zentrum des Feldes*/
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+#radarPointer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  background: linear-gradient(180deg, #00ff80 80%, transparent 100%);
+  transform-origin: 50% 100%;
+  border-radius: 2px;
+  box-shadow: 0 0 12px 2px #00ff80;
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 3; /*Anzeigereihenfolge*/
+}
+
+.horizontalLine,
+.verticalLine {
+  position: absolute;
+  background: #91b85f;
+}
+
+.horizontalLine {
+  width: 800px;
+  height: 1px;
+}
+
+.verticalLine {
+  width: 1px;
+  height: 800px;
+}
+
+#plane-list {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 200px;
+  min-height: 200px;
+  background: #111;
+  border-radius: 8px;
+  box-shadow: 0 0 12px #00ff80;
+  padding: 10px;
+  z-index: 10;
+}
+.plane-panel {
+  background: #222;
+  color: #00ff80;
+  margin: 8px 0;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 0 4px #00ff80;
+}
+
+.plane-panel.selected {
+  border: 2px solid #00ff80;
+  background: #222a;
+}
+
+.plane-panel.warning {
+  background: #222;
+  color: #ff2222;
+  border: 2px solid #ff2222;
+  box-shadow: none;
+}
+
+.plane-panel.selected-warning {
+  border: 2px solid #ff3333;
+  background: rgba(213, 0, 0, 0.667);
+  color: #ff0000;
+}
+
+.plane {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #baff7a;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #baff7a;
+  border: 1px solid #fff;
+  opacity: 0;
+  box-sizing: content-box;
+  cursor: pointer;
+}
+
+.plane-hitbox {
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.plane.selected {
+  box-shadow: 0 0 32px 8px #39ff14, 0 0 12px #baff7a;
+  border: 2px solid #39ff14;
+  z-index: 20;
+}
+
+.plane.warning {
+  box-shadow: 0 0 32px 8px #ff2222, 0 0 12px #ff2222;
+  border: 2px solid #ff2222;
+}
+
+.plane.selected-warning {
+  box-shadow: 0 0 32px 8px #ff3333, 0 0 12px #ff3333;
+  border: 2px solid #ff3333;
+  background: rgb(230, 61, 39);
+}
+
+.flightNumber {
+  position: absolute;
+  left: 50%;
+  top: -18px; /* über dem Kreis, Abstand anpassen */
+  transform: translateX(-50%);
+  color: #baff7a;
+  font-size: 12px;
+  font-weight: bold;
+  pointer-events: none;
+  user-select: none;
+  text-shadow: 0 0 4px #222; /* optional für bessere Lesbarkeit */
+}
+
+#playground.danger {
+  box-shadow: 0 0 64px 16px #ff2222 inset, 0 0 32px #ff2222;
+  background-color: #2b1919 !important;
+}
