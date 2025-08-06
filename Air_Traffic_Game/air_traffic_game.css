@@ -154,14 +154,14 @@ body {
 .flightNumber {
   position: absolute;
   left: 50%;
-  top: -18px; /* über dem Kreis, Abstand anpassen */
+  top: -18px; /* Abstand über dem Kreis anpassen */
   transform: translateX(-50%);
   color: #baff7a;
   font-size: 12px;
   font-weight: bold;
   pointer-events: none;
   user-select: none;
-  text-shadow: 0 0 4px #222; /* optional für bessere Lesbarkeit */
+  text-shadow: 0 0 4px #222; /* für bessere Lesbarkeit */
 }
 
 #playground.danger {

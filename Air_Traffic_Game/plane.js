@@ -27,7 +27,7 @@ export class Plane {
     // Unsichtbare, größere Klickfläche
     this.hitbox = document.createElement("div");
     this.hitbox.className = "plane-hitbox";
-    this.planeElement.appendChild(this.hitbox);
+    this.planeElement.appendChild(this.hitbox); // hier wird die hitbox zum kind des planeElement und erbt dadurch den Klickevent
 
     this.label = document.createElement("span");
     this.label.className = "flightNumber";
@@ -38,12 +38,11 @@ export class Plane {
     this.planeElement.style.left = this.planePositionX + "px";
     this.planeElement.style.top = this.planePositionY + "px";
 
-    // Richtung und Geschwindigkeit
+    // Richtung
     const planeDirectionX = planeTargetX - startPositionX;
     const planeDirectionY = planeTargetY - startPositionY;
     this.planeDirectionX = Math.sign(planeDirectionX); // -1, 0, 1
     this.planeDirectionY = Math.sign(planeDirectionY); // -1, 0, 1
-    this.planeSpeed = Math.random() * 2 + 1;
   }
 
   move() {

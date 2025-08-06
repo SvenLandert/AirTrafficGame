@@ -95,7 +95,7 @@ class Playground {
     setInterval(() => {
       //alle 20 mSec wird der Winkel des Zeigers um 0.5 Grad rotiert. Das translate ist dafür zuständig, dass der Zeiger über die Mitte des Feldes dreht
       angleRadarPointer = (angleRadarPointer + 0.5) % 360;
-      radarPointer.style.transform = `translate(-50%, -100%) rotate(${angleRadarPointer}deg)`;
+      radarPointer.style.transform = `translate(0%, -100%) rotate(${angleRadarPointer}deg)`;
     }, 20);
   }
 
@@ -249,24 +249,28 @@ class Playground {
         const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY); // Satz des Pythagoras für die Direktdistanz zwischen den Fliegern
 
         if (distance < 80) {
-          warningPlanesTooClose.add(firstPlane);
-          warningPlanesTooClose.add(secondPlane);
+          // wenn die Distanz kleiner als 80px ist...
+          warningPlanesTooClose.add(firstPlane); //Flugzeug 1 in Set nehmen
+          warningPlanesTooClose.add(secondPlane); //Flugzeug 2 in Set nehmen
         }
       }
     }
     this.activePlanes.forEach((plane) => {
+      //jedes aktive Flugzeug wird geprüft,
       if (warningPlanesTooClose.has(plane)) {
-        plane.planeElement.classList.add("warning");
+        // ob es im Set ist
+        plane.planeElement.classList.add("warning"); // wenn ja kommt die CSS-Klasse warning zum Einsatz
       } else {
-        plane.planeElement.classList.remove("warning");
+        plane.planeElement.classList.remove("warning"); // // sonst wird die Klasse entfernt
       }
     });
     if (warningPlanesTooClose.size > 0) {
-      this.playgroundElement.classList.add("danger");
+      //wenn mindestens ein Paar zu Nahe ist
+      this.playgroundElement.classList.add("danger"); //kommt die CSS-Klasse danger zum Einsatz
     } else {
-      this.playgroundElement.classList.remove("danger");
+      this.playgroundElement.classList.remove("danger"); // sonst wird die Klasse entfernt
     }
-    if (this.planeController) this.planeController.renderPanels();
+    if (this.planeController) this.planeController.renderPanels(); //Falls ein Controller existiert, wird das Panel aktualisiert, damit der aktuelle Status angezeigt wird.
   }
 }
 
