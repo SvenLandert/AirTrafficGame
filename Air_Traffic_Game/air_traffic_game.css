@@ -90,6 +90,7 @@ body {
   border-radius: 4px;
   cursor: pointer;
   box-shadow: 0 0 4px #00ff80;
+  z-index: 11;
 }
 
 .plane-panel.selected {

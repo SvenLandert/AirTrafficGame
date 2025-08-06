@@ -95,7 +95,7 @@ class Playground {
     setInterval(() => {
       //alle 20 mSec wird der Winkel des Zeigers um 0.5 Grad rotiert. Das translate ist dafür zuständig, dass der Zeiger über die Mitte des Feldes dreht
       angleRadarPointer = (angleRadarPointer + 0.5) % 360;
-      radarPointer.style.transform = `translate(0%, -100%) rotate(${angleRadarPointer}deg)`;
+      radarPointer.style.transform = `translate(0%, -100%)rotate(${angleRadarPointer}deg)`;
     }, 20);
   }
 

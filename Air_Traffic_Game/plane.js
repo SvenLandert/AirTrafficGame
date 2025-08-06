@@ -27,7 +27,7 @@ export class Plane {
     // Unsichtbare, größere Klickfläche
     this.hitbox = document.createElement("div");
     this.hitbox.className = "plane-hitbox";
-    this.planeElement.appendChild(this.hitbox); // hier wird die hitbox zum kind des planeElement und erbt dadurch den Klickevent
+    this.planeElement.appendChild(this.hitbox); // hier wird die hitbox zum child des planeElement und erbt dadurch den clickevent
 
     this.label = document.createElement("span");
     this.label.className = "flightNumber";
@@ -39,16 +39,16 @@ export class Plane {
     this.planeElement.style.top = this.planePositionY + "px";
 
     // Richtung
-    const planeDirectionX = planeTargetX - startPositionX;
-    const planeDirectionY = planeTargetY - startPositionY;
-    this.planeDirectionX = Math.sign(planeDirectionX); // -1, 0, 1
-    this.planeDirectionY = Math.sign(planeDirectionY); // -1, 0, 1
+    const planeDirectionX = planeTargetX - startPositionX; // Wie weit ist das Ziel vom Start in X-Richtung entfernt (+ = rechts, - = links)
+    const planeDirectionY = planeTargetY - startPositionY; // Wie weit ist das Ziel vom Start in Y-Richtung entfernt (+ = unten, - = oben)
+    this.planeDirectionX = Math.sign(planeDirectionX); // Math.sign gibt zurück ob der Wert negativ, positiv oder 0 ist. (-1 nach links, 0 keine Bewegung, 1 nach rechts)
+    this.planeDirectionY = Math.sign(planeDirectionY); // Math.sign gibt zurück ob der Wert negativ, positiv oder 0 ist. (-1 nach oben, 0 keine Bewegung, 1 nach unten)
   }
 
   move() {
-    // Flieger bewegt sich immer in die aktuelle Richtung
-    this.planePositionX += this.planeDirectionX * this.planeSpeed;
-    this.planePositionY += this.planeDirectionY * this.planeSpeed;
+    this.planePositionX += this.planeDirectionX * this.planeSpeed; //X-Position +1/-1/0 * speed definiert die Bewegung in X-Position
+    this.planePositionY += this.planeDirectionY * this.planeSpeed; //Y-Position +1/-1/0 * speed definiert die Bewegung in Y-Position
+    //neue Position wir ins DOM gesetzt (Flugzeug an neuer Position angezeigt)
     this.planeElement.style.left = this.planePositionX + "px";
     this.planeElement.style.top = this.planePositionY + "px";
   }

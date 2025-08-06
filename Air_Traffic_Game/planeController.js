@@ -5,8 +5,9 @@ class PlanePanel {
     this.panelElement = document.createElement("div");
     this.panelElement.className = "plane-panel";
     if (isSelected) this.panelElement.classList.add("selected");
-    this.panelElement.textContent = plane.flightNumber;
-    this.panelElement.onclick = () => onControl(plane);
+    this.panelElement.textContent = plane.flightNumber; // Flugnummer wird im Panel angezeigt
+    this.panelElement.addEventListener("click", () => console.log("aaaaa"));
+    //this.panelElement.onclick = () => console.log("eee"); //onControl(plane);
   }
 }
 
@@ -50,6 +51,11 @@ class PlaneController {
       );
       panel.panelElement.id = "plane-panel-" + idx;
 
+      /* panel.panelElement.addEventListener("click", () => {
+        alert("Panel clicked!"); // Nur zum Testen, später entfernen!
+        this.handleControl(plane); // Das ist die eigentliche Steuerung
+      });*/
+
       panel.panelElement.classList.remove(
         "warning",
         "selected-warning",
@@ -75,6 +81,7 @@ class PlaneController {
       }
 
       this.panels.push(panel);
+      panel.panelElement.addEventListener("click", () => console.log("aaaaa"));
       this.panelContainer.appendChild(panel.panelElement);
     });
 
