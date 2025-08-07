@@ -1,30 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Air Traffic Simulator</title>
     <link rel="stylesheet" href="./air_traffic_game.css"></link>
     <script type="module" src="playground.js"></script>
     <script type="module" src="joystick.js"></script>
-</head>
-<body>
-<h1 id="gametitle">Air Traffic Simulator</h1>
-<br>
-<div id="main-container">
-  <div id="playground"></div>
-  <div id="sidebar">
-    <button id="pause-btn">Pause</button>
-    <div id="lives-container">
-      <span id="lives-label"></span>
-      <span id="lives-icons">
-        <img class="life-icon" alt="self-Logo" src="./assets/airplane-svgrepo-com.svg">
-        <img class="life-icon" alt="self-Logo" src="./assets/airplane-svgrepo-com.svg">
-        <img class="life-icon" alt="self-Logo" src="./assets/airplane-svgrepo-com.svg">
-      </span>
+  </head>
+  <body>
+ <div id="main-container">
+  <div class="playground-sidebar-row">
+    <div class="title-playground-container">
+    <h1 id="gametitle">Air Traffic Simulator</h1>
+    <div id="playground"></div>
     </div>
-    <div id="plane-list"></div>
-  </div>
-</div>
-</body>
+    <div id="sidebar">
+        <div class="buttons">
+        <button id="break-btn">Break</button>
+        <button id="restart-btn">Restart</button>
+        </div>
+        <div id="lives-container">
+          <span id="lives-icons"></span>
+        </div>
+        <div id="plane-list"></div>
+      </div>
+    </div>
+  </body>
 </html>

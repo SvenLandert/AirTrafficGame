@@ -25,7 +25,8 @@ class Playground {
     this.maxFastPlanes = 1; // Startwert der schnellen Flieger
     this.planeController = planeController; //planeController wird im Playground gesetzt
 
-    this.lives = 3;
+    this.remainingLives = 3;
+    this.maxLives = 3;
     this.livesIcons = document.getElementById("lives-icons");
 
     this.createGrid(); //Zeichnet das Raster
@@ -43,13 +44,13 @@ class Playground {
 
   updateLivesDisplay() {
     this.livesIcons.innerHTML = "";
-    for (let index = 0; index < 3; index++) {
-      if (index < this.lives) {
+    for (let index = 0; index < this.maxLives; index++) {
+      if (index < this.remainingLives) {
         this.livesIcons.innerHTML +=
           '<img class="life-icon" src="./assets/airplane-svgrepo-com.svg">';
       } else {
         this.livesIcons.innerHTML +=
-          '<img class="life-icon crashed" src="./assets/airplane-mode-off-1407-svgrepo-com.svg">';
+          '<img class="life-icon-crashed" src="./assets/airplane-mode-off-1407-svgrepo-com.svg">';
       }
     }
   }
@@ -234,10 +235,6 @@ class Playground {
           if (index > -1) {
             //Prüfung ob Flieger im Array
             this.activePlanes.splice(index, 1); // der Flieger aus der aktiven liste gelöscht (Indexnummer und Anzahl an zu löschenden Stellen im Parameter)
-            if (plane.crashed) {
-              this.lives--;
-              this.updateLivesDisplay();
-            }
           }
           if (this.planeController) this.planeController.renderPanels();
         }
@@ -251,6 +248,7 @@ class Playground {
   //Annäherungswarnsystem
   checkProximity() {
     const warningPlanesTooClose = new Set(); // neues leeres Set für die Flieger welche zu nah sind
+
     for (
       //Schleife durch alle Flieger beginnend bei Index 0
       let firstPlaneIndex = 0;
@@ -273,17 +271,10 @@ class Playground {
           // wenn die Distanz kleiner als 80px ist...
           warningPlanesTooClose.add(firstPlane);
           warningPlanesTooClose.add(secondPlane);
-
-          // Markiere beide Flieger als gecrasht
-          firstPlane.crashed = true;
-          secondPlane.crashed = true;
-
-          // Beide Flieger sofort entfernen und Leben abziehen
-          this.removeCrashedPlane(firstPlane);
-          this.removeCrashedPlane(secondPlane);
         }
       }
     }
+    // Warnlogik bleibt wie gehabt
     this.activePlanes.forEach((plane) => {
       //jedes aktive Flugzeug wird geprüft,
       if (warningPlanesTooClose.has(plane)) {
@@ -299,6 +290,7 @@ class Playground {
     } else {
       this.playgroundElement.classList.remove("danger"); // sonst wird die Klasse entfernt
     }
+
     if (this.planeController) this.planeController.renderPanels(); //Falls ein Controller existiert, wird das Panel aktualisiert, damit der aktuelle Status angezeigt wird.
   }
 }
@@ -308,5 +300,29 @@ window.onload = function () {
   const playground = new Playground(800, 10); //Definition der Grösse und der Anzahl Felder im Raster
   planeController = new PlaneController(playground);
   playground.planeController = planeController;
+  playground.updateLivesDisplay(); // Lebensanzeige initial anzeigen
   window.playground = playground;
 };
+
+document.getElementById("restart-btn").addEventListener("click", () => {
+  if (window.playground) {
+    // Alle Flieger entfernen
+    window.playground.activePlanes.forEach((plane) => {
+      if (plane.planeElement) {
+        plane.planeElement.classList.remove("warning");
+        plane.planeElement.remove();
+      }
+      clearInterval(plane.moveInterval);
+    });
+    window.playground.activePlanes = [];
+    // Leben zurücksetzen
+    window.playground.remainingLives = window.playground.maxLives;
+    window.playground.updateLivesDisplay();
+    // Panel aktualisieren
+    if (window.playground.planeController) {
+      window.playground.planeController.renderPanels();
+    }
+    // Danger-Status entfernen
+    window.playground.playgroundElement.classList.remove("danger");
+  }
+});
