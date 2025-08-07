@@ -45,6 +45,10 @@ export class Plane {
     this.planeDirectionY = Math.sign(planeDirectionY); // Math.sign gibt zurück ob der Wert negativ, positiv oder 0 ist. (-1 nach oben, 0 keine Bewegung, 1 nach unten)
   }
 
+  setSelected() {
+    this.planeElement.classList.add("selected");
+    console.log("areWeHere");
+  }
   move() {
     this.planePositionX += this.planeDirectionX * this.planeSpeed; //X-Position +1/-1/0 * speed definiert die Bewegung in X-Position
     this.planePositionY += this.planeDirectionY * this.planeSpeed; //Y-Position +1/-1/0 * speed definiert die Bewegung in Y-Position

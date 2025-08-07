@@ -25,17 +25,33 @@ class Playground {
     this.maxFastPlanes = 1; // Startwert der schnellen Flieger
     this.planeController = planeController; //planeController wird im Playground gesetzt
 
+    this.lives = 3;
+    this.livesIcons = document.getElementById("lives-icons");
+
     this.createGrid(); //Zeichnet das Raster
     this.createRadarCircles(); //Zeichnet die Kreise vom Radar
     this.createRadarPointer(); // Zeiger erzeugen
 
     setInterval(() => this.addPlane(20), 2000); // alle 2 sek ein neues Flugzeug sofern Platz mit min 20Px Abstand zum Seitenrand
-    setInterval(() => {
+    /* setInterval(() => {
       //Erhöhung der max. Flieger und schnellen Flieger
       this.maxActivePlanes++;
       this.maxFastPlanes++;
     }, 60000); // jede Minute erhöhen
-    setInterval(() => this.checkProximity(), PLANE_MOVE_INTERVAL_MS); //alles 50 mSek wird Nähe der aktiven Flieger geprüft
+    setInterval(() => this.checkProximity(), PLANE_MOVE_INTERVAL_MS); //alles 50 mSek wird Nähe der aktiven Flieger geprüft*/
+  }
+
+  updateLivesDisplay() {
+    this.livesIcons.innerHTML = "";
+    for (let index = 0; index < 3; index++) {
+      if (index < this.lives) {
+        this.livesIcons.innerHTML +=
+          '<img class="life-icon" src="./assets/airplane-svgrepo-com.svg">';
+      } else {
+        this.livesIcons.innerHTML +=
+          '<img class="life-icon crashed" src="./assets/airplane-mode-off-1407-svgrepo-com.svg">';
+      }
+    }
   }
 
   //Generieren der Flugnummer
@@ -218,7 +234,12 @@ class Playground {
           if (index > -1) {
             //Prüfung ob Flieger im Array
             this.activePlanes.splice(index, 1); // der Flieger aus der aktiven liste gelöscht (Indexnummer und Anzahl an zu löschenden Stellen im Parameter)
+            if (plane.crashed) {
+              this.lives--;
+              this.updateLivesDisplay();
+            }
           }
+          if (this.planeController) this.planeController.renderPanels();
         }
       }
     }, PLANE_MOVE_INTERVAL_MS);
@@ -250,8 +271,16 @@ class Playground {
 
         if (distance < 80) {
           // wenn die Distanz kleiner als 80px ist...
-          warningPlanesTooClose.add(firstPlane); //Flugzeug 1 in Set nehmen
-          warningPlanesTooClose.add(secondPlane); //Flugzeug 2 in Set nehmen
+          warningPlanesTooClose.add(firstPlane);
+          warningPlanesTooClose.add(secondPlane);
+
+          // Markiere beide Flieger als gecrasht
+          firstPlane.crashed = true;
+          secondPlane.crashed = true;
+
+          // Beide Flieger sofort entfernen und Leben abziehen
+          this.removeCrashedPlane(firstPlane);
+          this.removeCrashedPlane(secondPlane);
         }
       }
     }

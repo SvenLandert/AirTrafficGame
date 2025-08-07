@@ -9,9 +9,22 @@
     <script type="module" src="joystick.js"></script>
 </head>
 <body>
-    <h1 id="gametitle">Air Traffic Simulator</h1>
-    <br>
-    <div id="playground"></div>
+<h1 id="gametitle">Air Traffic Simulator</h1>
+<br>
+<div id="main-container">
+  <div id="playground"></div>
+  <div id="sidebar">
+    <button id="pause-btn">Pause</button>
+    <div id="lives-container">
+      <span id="lives-label"></span>
+      <span id="lives-icons">
+        <img class="life-icon" alt="self-Logo" src="./assets/airplane-svgrepo-com.svg">
+        <img class="life-icon" alt="self-Logo" src="./assets/airplane-svgrepo-com.svg">
+        <img class="life-icon" alt="self-Logo" src="./assets/airplane-svgrepo-com.svg">
+      </span>
+    </div>
     <div id="plane-list"></div>
+  </div>
+</div>
 </body>
 </html>
