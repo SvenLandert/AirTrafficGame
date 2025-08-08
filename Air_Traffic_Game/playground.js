@@ -37,7 +37,7 @@ class Playground {
     this.createRadarCircles(); //Zeichnet die Kreise vom Radar
     this.createRadarPointer(); // Zeiger erzeugen
 
-    setInterval(() => this.addPlane(20), 2000); // alle 2 sek ein neues Flugzeug sofern Platz mit min 20Px Abstand zum Seitenrand
+    this.addPlaneInterval = setInterval(() => this.addPlane(20), 2000); // alle 2 sek ein neues Flugzeug sofern Platz mit min 20Px Abstand zum Seitenrand
     /* setInterval(() => {
       //Erhöhung der max. Flieger und schnellen Flieger
       this.maxActivePlanes++;
@@ -45,14 +45,20 @@ class Playground {
     }, 60000); // jede Minute erhöhen
     setInterval(() => this.checkProximity(), PLANE_MOVE_INTERVAL_MS); //alles 50 mSek wird Nähe der aktiven Flieger geprüft*/
   }
-  //TODO: aus Playground nehmen
+  //TODO: aus Playground nehmen und ggf erweitern
   reset() {
     this.activePlanes.forEach((plane) => {
       if (plane.planeElement) {
         plane.planeElement.classList.remove("warning");
         plane.planeElement.remove();
       }
+      if (plane.moveInterval) {
+        clearInterval(plane.moveInterval);
+        plane.moveInterval = null;
+      }
     });
+    this.activePlanes = []; // Liste wirklich leeren!
+    if (this.planeController) this.planeController.renderPanels(); // Panel aktualisieren
   }
   //TODO: aus Playground nehmen
   updateLivesDisplay() {
@@ -122,9 +128,9 @@ class Playground {
     const maxSizeRadarCircles = this.maxSizeRadarCircles;
     radarPointer.style.height = maxSizeRadarCircles / 2 + "px"; //es wird der Radius des grössten Kreises berechnet, damit hat man die Länge des Zeigers
     let angleRadarPointer = 0; //Startwinkel des Zeigers (oben)
-
-    setInterval(() => {
-      //alle 20 mSec wird der Winkel des Zeigers um 0.5 Grad rotiert. Das translate ist dafür zuständig, dass der Zeiger über die Mitte des Feldes dreht
+    //alle 20 mSec wird der Winkel des Zeigers um 0.5 Grad rotiert. Das translate ist dafür zuständig, dass der Zeiger über die Mitte des Feldes dreht
+    angleRadarPointer = (angleRadarPointer + 0.5) % 360;
+    this.radarPointerInterval = setInterval(() => {
       angleRadarPointer = (angleRadarPointer + 0.5) % 360;
       radarPointer.style.transform = `translate(0%, -100%)rotate(${angleRadarPointer}deg)`;
     }, 20);
@@ -320,6 +326,36 @@ window.onload = function () {
 };
 
 document.getElementById("restart-btn").addEventListener("click", () => {
-  window.playground.reset();
-  timer.resetTimer();
+  location.reload(); // Seite komplett neu laden
+});
+
+document.getElementById("break-btn").addEventListener("click", () => {
+  timer.stopTimer(); // Timer pausieren
+
+  // Alle Bewegungsintervalle der aktiven Flieger stoppen
+  window.playground.activePlanes.forEach((plane) => {
+    if (plane.moveInterval) {
+      clearInterval(plane.moveInterval);
+      plane.moveInterval = null;
+    }
+  });
+
+  // Alle globalen Intervalle stoppen (Radar, neue Flieger)
+  ["radarPointerInterval", "addPlaneInterval"].forEach((intervalName) => {
+    if (window.playground[intervalName]) {
+      clearInterval(window.playground[intervalName]);
+      window.playground[intervalName] = null;
+    }
+  });
+
+  // Game Paused Banner einblenden
+  let pausedBanner = document.getElementById("paused-banner");
+  if (!pausedBanner) {
+    pausedBanner = document.createElement("div");
+    pausedBanner.id = "paused-banner";
+    pausedBanner.textContent = "Game Paused";
+    pausedBanner.className = "paused-banner";
+    window.playground.playgroundElement.appendChild(pausedBanner);
+    console.log("Banner eingefügt:", pausedBanner);
+  }
 });
