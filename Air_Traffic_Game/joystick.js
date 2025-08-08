@@ -1,6 +1,5 @@
 window.addEventListener("keydown", (event) => {
-  const playground = window.playground;
-  const planeController = playground?.planeController;
+  const planeController = window.playground?.planeController;
   const plane = planeController?.selectedPlane;
   if (!plane) return;
 
@@ -25,6 +24,3 @@ window.addEventListener("keydown", (event) => {
       return;
   }
 });
-
-// Playground-Instanz global verfügbar machen
-window.playground = window.playground || null;

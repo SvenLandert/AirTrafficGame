@@ -1,5 +1,6 @@
 import { Plane } from "./plane.js";
 import { PlaneController } from "./planeController.js";
+import { Timer } from "./Timer.js";
 
 // Definition der Intervalle und der verschiedenen Speeds
 const PLANE_MOVE_INTERVAL_MS = 50;
@@ -8,8 +9,11 @@ const MAX_SPEED_SLOW = 20;
 const MIN_SPEED_FAST = 30;
 const MAX_SPEED_FAST = 50;
 
+// Definition der Timerwerten
+let timer;
+
 class Playground {
-  constructor(playgroundSize, stepsGrid, planeController) {
+  constructor(playgroundSize, stepsGrid) {
     //im konstruktor wird unter anderem die Grösse des Spielfelds und die Anzahl Gitter definiert
     this.playgroundSize = playgroundSize;
     this.stepsGrid = stepsGrid;
@@ -23,21 +27,54 @@ class Playground {
     this.activePlanes = []; // leeres Array für die aktiven Flieger
     this.maxActivePlanes = 5; // Startwert der maximal aktiven Fliegern
     this.maxFastPlanes = 1; // Startwert der schnellen Flieger
-    this.planeController = planeController; //planeController wird im Playground gesetzt
+    this.planeController = new PlaneController(this);
+
+    this.remainingLives = 3;
+    this.maxLives = 3;
+    this.livesIcons = document.getElementById("lives-icons");
 
     this.createGrid(); //Zeichnet das Raster
     this.createRadarCircles(); //Zeichnet die Kreise vom Radar
     this.createRadarPointer(); // Zeiger erzeugen
 
-    setInterval(() => this.addPlane(20), 2000); // alle 2 sek ein neues Flugzeug sofern Platz mit min 20Px Abstand zum Seitenrand
-    setInterval(() => {
+    this.addPlaneInterval = setInterval(() => this.addPlane(20), 2000); // alle 2 sek ein neues Flugzeug sofern Platz mit min 20Px Abstand zum Seitenrand
+    /* setInterval(() => {
       //Erhöhung der max. Flieger und schnellen Flieger
       this.maxActivePlanes++;
       this.maxFastPlanes++;
     }, 60000); // jede Minute erhöhen
-    setInterval(() => this.checkProximity(), PLANE_MOVE_INTERVAL_MS); //alles 50 mSek wird Nähe der aktiven Flieger geprüft
+    setInterval(() => this.checkProximity(), PLANE_MOVE_INTERVAL_MS); //alles 50 mSek wird Nähe der aktiven Flieger geprüft*/
+  }
+  //TODO: aus Playground nehmen und ggf erweitern
+  reset() {
+    this.activePlanes.forEach((plane) => {
+      if (plane.planeElement) {
+        plane.planeElement.classList.remove("warning");
+        plane.planeElement.remove();
+      }
+      if (plane.moveInterval) {
+        clearInterval(plane.moveInterval);
+        plane.moveInterval = null;
+      }
+    });
+    this.activePlanes = []; // Liste wirklich leeren!
+    if (this.planeController) this.planeController.renderPanels(); // Panel aktualisieren
+  }
+  //TODO: aus Playground nehmen
+  updateLivesDisplay() {
+    this.livesIcons.innerHTML = "";
+    for (let index = 0; index < this.maxLives; index++) {
+      if (index < this.remainingLives) {
+        this.livesIcons.innerHTML +=
+          '<img class="life-icon" src="./assets/airplane-svgrepo-com.svg">';
+      } else {
+        this.livesIcons.innerHTML +=
+          '<img class="life-icon-crashed" src="./assets/airplane-mode-off-1407-svgrepo-com.svg">';
+      }
+    }
   }
 
+  //TODO: Aus Playground nehmen
   //Generieren der Flugnummer
   generateFlightNumber() {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -91,14 +128,15 @@ class Playground {
     const maxSizeRadarCircles = this.maxSizeRadarCircles;
     radarPointer.style.height = maxSizeRadarCircles / 2 + "px"; //es wird der Radius des grössten Kreises berechnet, damit hat man die Länge des Zeigers
     let angleRadarPointer = 0; //Startwinkel des Zeigers (oben)
-
-    setInterval(() => {
-      //alle 20 mSec wird der Winkel des Zeigers um 0.5 Grad rotiert. Das translate ist dafür zuständig, dass der Zeiger über die Mitte des Feldes dreht
+    //alle 20 mSec wird der Winkel des Zeigers um 0.5 Grad rotiert. Das translate ist dafür zuständig, dass der Zeiger über die Mitte des Feldes dreht
+    angleRadarPointer = (angleRadarPointer + 0.5) % 360;
+    this.radarPointerInterval = setInterval(() => {
       angleRadarPointer = (angleRadarPointer + 0.5) % 360;
-      radarPointer.style.transform = `translate(-50%, -100%) rotate(${angleRadarPointer}deg)`;
+      radarPointer.style.transform = `translate(0%, -100%)rotate(${angleRadarPointer}deg)`;
     }, 20);
   }
 
+  //TODO: aus Playground nehmen
   //Einsettzen des Fliegers
   addPlane(playgroundMargin) {
     // Abfrage wie viele Flieger aktiv sind und ob ein weiterer Flieger eingesetzt werden kann
@@ -219,6 +257,7 @@ class Playground {
             //Prüfung ob Flieger im Array
             this.activePlanes.splice(index, 1); // der Flieger aus der aktiven liste gelöscht (Indexnummer und Anzahl an zu löschenden Stellen im Parameter)
           }
+          if (this.planeController) this.planeController.renderPanels();
         }
       }
     }, PLANE_MOVE_INTERVAL_MS);
@@ -227,9 +266,11 @@ class Playground {
     if (this.planeController) this.planeController.renderPanels(); // der Flieger wird im Panel angezeigt
   }
 
+  //TODO: aus Playground nehmen
   //Annäherungswarnsystem
   checkProximity() {
     const warningPlanesTooClose = new Set(); // neues leeres Set für die Flieger welche zu nah sind
+
     for (
       //Schleife durch alle Flieger beginnend bei Index 0
       let firstPlaneIndex = 0;
@@ -249,31 +290,72 @@ class Playground {
         const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY); // Satz des Pythagoras für die Direktdistanz zwischen den Fliegern
 
         if (distance < 80) {
+          // wenn die Distanz kleiner als 80px ist...
           warningPlanesTooClose.add(firstPlane);
           warningPlanesTooClose.add(secondPlane);
         }
       }
     }
     this.activePlanes.forEach((plane) => {
+      //jedes aktive Flugzeug wird geprüft,
       if (warningPlanesTooClose.has(plane)) {
-        plane.planeElement.classList.add("warning");
+        // ob es im Set ist
+        plane.planeElement.classList.add("warning"); // wenn ja kommt die CSS-Klasse warning zum Einsatz
       } else {
-        plane.planeElement.classList.remove("warning");
+        plane.planeElement.classList.remove("warning"); // // sonst wird die Klasse entfernt
       }
     });
     if (warningPlanesTooClose.size > 0) {
-      this.playgroundElement.classList.add("danger");
+      //wenn mindestens ein Paar zu Nahe ist
+      this.playgroundElement.classList.add("danger"); //kommt die CSS-Klasse danger zum Einsatz
     } else {
-      this.playgroundElement.classList.remove("danger");
+      this.playgroundElement.classList.remove("danger"); // sonst wird die Klasse entfernt
     }
-    if (this.planeController) this.planeController.renderPanels();
+
+    if (this.planeController) this.planeController.renderPanels(); //Falls ein Controller existiert, wird das Panel aktualisiert, damit der aktuelle Status angezeigt wird.
   }
 }
 
 window.onload = function () {
-  let planeController;
+  const timerElement = document.getElementById("timer-display");
+  timer = new Timer(timerElement);
   const playground = new Playground(800, 10); //Definition der Grösse und der Anzahl Felder im Raster
-  planeController = new PlaneController(playground);
-  playground.planeController = planeController;
+  playground.updateLivesDisplay(); // Lebensanzeige initial anzeigen
+  timer.startTimer();
   window.playground = playground;
 };
+
+document.getElementById("restart-btn").addEventListener("click", () => {
+  location.reload(); // Seite komplett neu laden
+});
+
+document.getElementById("break-btn").addEventListener("click", () => {
+  timer.stopTimer(); // Timer pausieren
+
+  // Alle Bewegungsintervalle der aktiven Flieger stoppen
+  window.playground.activePlanes.forEach((plane) => {
+    if (plane.moveInterval) {
+      clearInterval(plane.moveInterval);
+      plane.moveInterval = null;
+    }
+  });
+
+  // Alle globalen Intervalle stoppen (Radar, neue Flieger)
+  ["radarPointerInterval", "addPlaneInterval"].forEach((intervalName) => {
+    if (window.playground[intervalName]) {
+      clearInterval(window.playground[intervalName]);
+      window.playground[intervalName] = null;
+    }
+  });
+
+  // Game Paused Banner einblenden
+  let pausedBanner = document.getElementById("paused-banner");
+  if (!pausedBanner) {
+    pausedBanner = document.createElement("div");
+    pausedBanner.id = "paused-banner";
+    pausedBanner.textContent = "Game Paused";
+    pausedBanner.className = "paused-banner";
+    window.playground.playgroundElement.appendChild(pausedBanner);
+    console.log("Banner eingefügt:", pausedBanner);
+  }
+});

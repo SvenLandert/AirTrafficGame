@@ -1,17 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Air Traffic Simulator</title>
     <link rel="stylesheet" href="./air_traffic_game.css"></link>
     <script type="module" src="playground.js"></script>
     <script type="module" src="joystick.js"></script>
-</head>
-<body>
+    <script type="module" src="crashHandling.js"></script>
+    <script type="module" src="plane.js"></script>
+    <script type="module" src="planeController.js"></script>
+  </head>
+  <body>
+ <div id="main-container">
+  <div class="playground-sidebar-row">
+    <div class="title-playground-container">
     <h1 id="gametitle">Air Traffic Simulator</h1>
-    <br>
     <div id="playground"></div>
-    <div id="plane-list"></div>
-</body>
+    </div>
+    <div id="sidebar">
+        <div class="buttons">
+        <button id="break-btn">Break</button>
+        <button id="restart-btn">Restart</button>
+        </div>
+        <div id="timer-container">
+          <div id="timer-display"></div>
+        </div>
+        <div id="lives-container">
+          <div id="lives-icons"></div>
+        </div>
+        <div id="plane-list"></div>
+      </div>
+    </div>
+  </body>
 </html>

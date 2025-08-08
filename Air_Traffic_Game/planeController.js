@@ -4,20 +4,24 @@ class PlanePanel {
     this.plane = plane;
     this.panelElement = document.createElement("div");
     this.panelElement.className = "plane-panel";
+    this.panelElement.id = "plane-panel-" + plane.flightNumber;
     if (isSelected) this.panelElement.classList.add("selected");
-    this.panelElement.textContent = plane.flightNumber;
-    this.panelElement.onclick = () => onControl(plane);
+    this.panelElement.textContent = plane.flightNumber; // Flugnummer wird im Panel angezeigt
+    this.panelElement.addEventListener("click", () => {
+      console.log("aaaaa", plane.flightNumber);
+      plane.setSelected();
+    });
+    //this.panelElement.onclick = () => console.log("eee"); //onControl(plane);
   }
 }
 
 class PlaneController {
   constructor(playground) {
     this.playground = playground;
-    this.selectedPlane = null;
-    this.panels = [];
+    this.selectedPlane = null; // kein Flieger gewählt
+    this.panels = []; // leeres Panel-Array
     this.panelContainer = document.getElementById("plane-list");
   }
-
   handleControl(plane) {
     this.selectedPlane = plane;
     this.renderPanels();
@@ -40,15 +44,17 @@ class PlaneController {
     const isDanger =
       this.playground.playgroundElement.classList.contains("danger");
 
-    this.playground.activePlanes.forEach((plane, idx) => {
-      const isSelected = this.selectedPlane === plane;
+    this.playground?.activePlanes?.forEach((plane, idx) => {
+      console.log("XXXXXXX", plane);
+      console.log("YYYY", this.selectedPlane);
+      const isSelected =
+        this.selectedPlane?.flightNumber === plane.flightNumber;
       const isWarning = plane.planeElement.classList.contains("warning");
       const panel = new PlanePanel(
         plane,
         this.handleControl.bind(this),
         isSelected
       );
-      panel.panelElement.id = "plane-panel-" + idx;
 
       panel.panelElement.classList.remove(
         "warning",
@@ -75,9 +81,9 @@ class PlaneController {
       }
 
       this.panels.push(panel);
+      panel.panelElement.addEventListener("click", () => console.log("aaaaa"));
       this.panelContainer.appendChild(panel.panelElement);
     });
-
     this.syncPlaneElementClicks();
   }
 }
