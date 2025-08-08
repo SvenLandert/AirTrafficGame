@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "Digital7";
+  src: url("./assets/font/DS-DIGI.TTF") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 * {
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
 }
@@ -103,6 +110,24 @@ body {
   margin-top: 85px;
   margin-left: 32px;
   margin-right: 10px;
+}
+
+#timer-display {
+  font-family: "Digital7";
+  position: static;
+  width: 200px;
+  min-height: 40px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 35px;
+  color: #00ff80;
+  background: #111;
+  border-radius: 8px;
+  box-shadow: 0 0 12px #00ff80;
+  padding: 4px 12px;
+  box-sizing: border-box;
 }
 
 #lives-container {

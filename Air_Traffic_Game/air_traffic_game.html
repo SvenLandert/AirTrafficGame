@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="./air_traffic_game.css"></link>
     <script type="module" src="playground.js"></script>
     <script type="module" src="joystick.js"></script>
+    <script type="module" src="crashHandling.js"></script>
+    <script type="module" src="plane.js"></script>
+    <script type="module" src="planeController.js"></script>
   </head>
   <body>
  <div id="main-container">
@@ -20,8 +23,11 @@
         <button id="break-btn">Break</button>
         <button id="restart-btn">Restart</button>
         </div>
+        <div id="timer-container">
+          <div id="timer-display"></div>
+        </div>
         <div id="lives-container">
-          <span id="lives-icons"></span>
+          <div id="lives-icons"></div>
         </div>
         <div id="plane-list"></div>
       </div>

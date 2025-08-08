@@ -1,5 +1,6 @@
 import { Plane } from "./plane.js";
 import { PlaneController } from "./planeController.js";
+import { Timer } from "./Timer.js";
 
 // Definition der Intervalle und der verschiedenen Speeds
 const PLANE_MOVE_INTERVAL_MS = 50;
@@ -8,8 +9,11 @@ const MAX_SPEED_SLOW = 20;
 const MIN_SPEED_FAST = 30;
 const MAX_SPEED_FAST = 50;
 
+// Definition der Timerwerten
+let timer;
+
 class Playground {
-  constructor(playgroundSize, stepsGrid, planeController) {
+  constructor(playgroundSize, stepsGrid) {
     //im konstruktor wird unter anderem die Grösse des Spielfelds und die Anzahl Gitter definiert
     this.playgroundSize = playgroundSize;
     this.stepsGrid = stepsGrid;
@@ -23,7 +27,7 @@ class Playground {
     this.activePlanes = []; // leeres Array für die aktiven Flieger
     this.maxActivePlanes = 5; // Startwert der maximal aktiven Fliegern
     this.maxFastPlanes = 1; // Startwert der schnellen Flieger
-    this.planeController = planeController; //planeController wird im Playground gesetzt
+    this.planeController = new PlaneController(this);
 
     this.remainingLives = 3;
     this.maxLives = 3;
@@ -41,7 +45,16 @@ class Playground {
     }, 60000); // jede Minute erhöhen
     setInterval(() => this.checkProximity(), PLANE_MOVE_INTERVAL_MS); //alles 50 mSek wird Nähe der aktiven Flieger geprüft*/
   }
-
+  //TODO: aus Playground nehmen
+  reset() {
+    this.activePlanes.forEach((plane) => {
+      if (plane.planeElement) {
+        plane.planeElement.classList.remove("warning");
+        plane.planeElement.remove();
+      }
+    });
+  }
+  //TODO: aus Playground nehmen
   updateLivesDisplay() {
     this.livesIcons.innerHTML = "";
     for (let index = 0; index < this.maxLives; index++) {
@@ -55,6 +68,7 @@ class Playground {
     }
   }
 
+  //TODO: Aus Playground nehmen
   //Generieren der Flugnummer
   generateFlightNumber() {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -116,6 +130,7 @@ class Playground {
     }, 20);
   }
 
+  //TODO: aus Playground nehmen
   //Einsettzen des Fliegers
   addPlane(playgroundMargin) {
     // Abfrage wie viele Flieger aktiv sind und ob ein weiterer Flieger eingesetzt werden kann
@@ -245,6 +260,7 @@ class Playground {
     if (this.planeController) this.planeController.renderPanels(); // der Flieger wird im Panel angezeigt
   }
 
+  //TODO: aus Playground nehmen
   //Annäherungswarnsystem
   checkProximity() {
     const warningPlanesTooClose = new Set(); // neues leeres Set für die Flieger welche zu nah sind
@@ -274,7 +290,6 @@ class Playground {
         }
       }
     }
-    // Warnlogik bleibt wie gehabt
     this.activePlanes.forEach((plane) => {
       //jedes aktive Flugzeug wird geprüft,
       if (warningPlanesTooClose.has(plane)) {
@@ -296,33 +311,15 @@ class Playground {
 }
 
 window.onload = function () {
-  let planeController;
+  const timerElement = document.getElementById("timer-display");
+  timer = new Timer(timerElement);
   const playground = new Playground(800, 10); //Definition der Grösse und der Anzahl Felder im Raster
-  planeController = new PlaneController(playground);
-  playground.planeController = planeController;
   playground.updateLivesDisplay(); // Lebensanzeige initial anzeigen
+  timer.startTimer();
   window.playground = playground;
 };
 
 document.getElementById("restart-btn").addEventListener("click", () => {
-  if (window.playground) {
-    // Alle Flieger entfernen
-    window.playground.activePlanes.forEach((plane) => {
-      if (plane.planeElement) {
-        plane.planeElement.classList.remove("warning");
-        plane.planeElement.remove();
-      }
-      clearInterval(plane.moveInterval);
-    });
-    window.playground.activePlanes = [];
-    // Leben zurücksetzen
-    window.playground.remainingLives = window.playground.maxLives;
-    window.playground.updateLivesDisplay();
-    // Panel aktualisieren
-    if (window.playground.planeController) {
-      window.playground.planeController.renderPanels();
-    }
-    // Danger-Status entfernen
-    window.playground.playgroundElement.classList.remove("danger");
-  }
+  window.playground.reset();
+  timer.resetTimer();
 });
