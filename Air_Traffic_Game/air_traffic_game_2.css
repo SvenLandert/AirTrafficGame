@@ -1,0 +1,98 @@
+.Wrapper {
+  display: flex;
+  gap: 20px; /*TODO: wieso ein Gap?*/
+  max-width: 700px;
+}
+
+.GridWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.Grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(100% / 10), 1fr));
+  width: auto;
+  background-color: #1e2b19;
+}
+.Grid > .Field {
+  aspect-ratio: 1 / 1;
+  display: grid;
+  border: 1px solid #91b85f;
+}
+
+.RadarWrapper {
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  border: 2px solid #00ff80;
+  box-shadow: 0 0 16px 2px #00ff80;
+  opacity: 0.5;
+  top: 5%;
+  left: 5%;
+}
+
+.RadarWrapper .Circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid #00ff80;
+  box-shadow: 0 0 16px 2px #00ff80;
+  margin: 0;
+}
+.RadarWrapper .Circle:nth-child(1) {
+  width: 80%;
+  height: 80%;
+}
+.RadarWrapper .Circle:nth-child(2) {
+  width: 60%;
+  height: 60%;
+}
+.RadarWrapper .Circle:nth-child(3) {
+  width: 40%;
+  height: 40%;
+}
+.RadarWrapper .Circle:nth-child(4) {
+  width: 20%;
+  height: 20%;
+}
+
+.Pointer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 2px;
+  transform-origin: 50% 0;
+  width: 4px;
+  height: 50%;
+  background: linear-gradient(0deg, #00ff80 80%, transparent 100%);
+  box-shadow: 0 0 12px 2px #00ff80;
+  opacity: 0.7;
+  animation: rotate 20s normal linear infinite;
+}
+
+@keyframes rotate {
+  0% {
+    -webkit-transform: translate(-50%, 2px) rotate(0deg);
+    transform: translate(-50%, 2px) rotate(0deg);
+  }
+  25% {
+    -webkit-transform: translate(-50%, 2px) rotate(90deg);
+    transform: translate(-50%, 2px) rotate(90deg);
+  }
+  50% {
+    -webkit-transform: translate(-50%, 2px) rotate(180deg);
+    transform: translate(-50%, 2px) rotate(180deg);
+  }
+  75% {
+    -webkit-transform: translate(-50%, 2px) rotate(270deg);
+    transform: translate(-50%, 2px) rotate(270deg);
+  }
+  100% {
+    -webkit-transform: translate(-50%, 2px) rotate(360deg);
+    transform: translate(-50%, 2px) rotate(360deg);
+  }
+}

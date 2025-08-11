@@ -3,6 +3,20 @@ import { PlaneController } from "./planeController.js";
 import { Timer } from "./Timer.js";
 
 // Definition der Intervalle und der verschiedenen Speeds
+const gridEl = document.querySelector(".Grid");
+const countPerRow = 10;
+
+console.log(countPerRow);
+
+const possibleFields = new Array(countPerRow * countPerRow).fill();
+
+console.log(possibleFields.length);
+
+possibleFields.forEach((field, index) => {
+  let div = document.createElement("div");
+  div.className = "Field";
+  gridEl.append(div);
+});
 const PLANE_MOVE_INTERVAL_MS = 50;
 const MIN_SPEED_SLOW = 10;
 const MAX_SPEED_SLOW = 20;
@@ -13,17 +27,7 @@ const MAX_SPEED_FAST = 50;
 let timer;
 
 class Playground {
-  constructor(playgroundSize, stepsGrid) {
-    //im konstruktor wird unter anderem die Grösse des Spielfelds und die Anzahl Gitter definiert
-    this.playgroundSize = playgroundSize;
-    this.stepsGrid = stepsGrid;
-    this.playgroundElement = document.getElementById("playground");
-    this.numberRadarCircles = 5; // Anzahl der Kreise zentral festlegen
-
-    this.maxSizeRadarCircles =
-      (this.playgroundSize * this.numberRadarCircles) /
-      (this.numberRadarCircles + 1); // größter Kreis zentral berechnen
-
+  constructor() {
     this.activePlanes = []; // leeres Array für die aktiven Flieger
     this.maxActivePlanes = 5; // Startwert der maximal aktiven Fliegern
     this.maxFastPlanes = 1; // Startwert der schnellen Flieger
@@ -33,18 +37,15 @@ class Playground {
     this.maxLives = 3;
     this.livesIcons = document.getElementById("lives-icons");
 
-    this.createGrid(); //Zeichnet das Raster
-    this.createRadarCircles(); //Zeichnet die Kreise vom Radar
-    this.createRadarPointer(); // Zeiger erzeugen
-
     this.addPlaneInterval = setInterval(() => this.addPlane(20), 2000); // alle 2 sek ein neues Flugzeug sofern Platz mit min 20Px Abstand zum Seitenrand
     /* setInterval(() => {
       //Erhöhung der max. Flieger und schnellen Flieger
       this.maxActivePlanes++;
       this.maxFastPlanes++;
-    }, 60000); // jede Minute erhöhen
-    setInterval(() => this.checkProximity(), PLANE_MOVE_INTERVAL_MS); //alles 50 mSek wird Nähe der aktiven Flieger geprüft*/
+    }, 60000); // jede Minute erhöhen*/
+    setInterval(() => this.checkProximity(), PLANE_MOVE_INTERVAL_MS); //alles 50 mSek wird Nähe der aktiven Flieger geprüft
   }
+
   //TODO: aus Playground nehmen und ggf erweitern
   reset() {
     this.activePlanes.forEach((plane) => {
@@ -57,7 +58,7 @@ class Playground {
         plane.moveInterval = null;
       }
     });
-    this.activePlanes = []; // Liste wirklich leeren!
+    this.activePlanes = []; // Liste leeren
     if (this.planeController) this.planeController.renderPanels(); // Panel aktualisieren
   }
   //TODO: aus Playground nehmen
@@ -81,7 +82,10 @@ class Playground {
     const nameAirline =
       letters[Math.floor(Math.random() * letters.length)] +
       letters[Math.floor(Math.random() * letters.length)];
-    const randomNumber = Math.floor(1000 + Math.random() * 9000);
+    const randomNumber = String(
+      //String um padStart zu verwenden
+      Math.floor(100 + Math.random() * 9900)
+    ).padStart(4, "0"); //macht immer eine 4-stellige Zahl und füllt mit 0 auf
     return nameAirline + randomNumber;
   }
 
@@ -325,10 +329,12 @@ window.onload = function () {
   window.playground = playground;
 };
 
+//Restart-Button
 document.getElementById("restart-btn").addEventListener("click", () => {
   location.reload(); // Seite komplett neu laden
 });
 
+//Pause-Button
 document.getElementById("break-btn").addEventListener("click", () => {
   timer.stopTimer(); // Timer pausieren
 
@@ -356,6 +362,5 @@ document.getElementById("break-btn").addEventListener("click", () => {
     pausedBanner.textContent = "Game Paused";
     pausedBanner.className = "paused-banner";
     window.playground.playgroundElement.appendChild(pausedBanner);
-    console.log("Banner eingefügt:", pausedBanner);
   }
 });
